@@ -62,5 +62,3 @@ class UserResponseSchema(Schema):
     avatar = fields.String(allow_none=True)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
-    articles = fields.List(fields.Dict())
-    comments = fields.List(fields.Dict())
