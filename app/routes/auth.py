@@ -17,8 +17,9 @@ user_login_schema = LoginSchema()
 
 def create_access_refresh_tokens(identity, payload):
     try:
-        access_token = create_access_token(identity=identity, additional_claims=payload)
-        refresh_token = create_refresh_token(identity=identity)
+        idn = str(identity)
+        access_token = create_access_token(identity=idn, additional_claims=payload)
+        refresh_token = create_refresh_token(identity=idn)
         return {'access_token': access_token, 'refresh_token': refresh_token}
     except Exception as e:
         raise e
@@ -58,7 +59,7 @@ def login():
 @jwt_required(refresh=True)
 def refresh():
     try:
-        user_id = get_jwt_identity()
+        user_id = str(get_jwt_identity())
         new_access_token = create_access_token(identity=user_id)
         return set_response(new_access_token, "Refresh successful", 200, True)
     except Exception as e:
