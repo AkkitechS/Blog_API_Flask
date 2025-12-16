@@ -2,9 +2,11 @@ from flask import Flask
 from app.config import DevelopmentConfig
 from app.extensions import init_extensions
 from app.routes.users import users_bp
+from app.routes.auth import auth_bp
 from app.models.users import User
 from app.models.articles import Article
 from app.models.comments import Comment
+from app.middlewares.verify_api_key import verify_api_key
 
 BASE_ROUTE = '/api/v1/blog'
 
@@ -14,6 +16,8 @@ def create_app():
 
     init_extensions(app)
 
-    app.register_blueprint(users_bp, url_prefix=f'{BASE_ROUTE}/users')
+    app.before_request(verify_api_key)
+    app.register_blueprint(users_bp, url_prefix=f'{BASE_ROUTE}/user')
+    app.register_blueprint(auth_bp, url_prefix=f'{BASE_ROUTE}/auth')
 
     return app
