@@ -4,11 +4,12 @@ from werkzeug.security import check_password_hash
 from sqlalchemy import or_
 
 from app.extensions import db
-from app.routes.users import user_response_schema
 from app.utils.set_response import set_response
 from app.schemas.login import LoginSchema
 from app.schemas.user import UserResponseSchema
 from app.models.users import User
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 
 auth_bp = Blueprint('auth', __name__)
 user_response_schema = UserResponseSchema()
@@ -52,3 +53,13 @@ def login():
     except Exception as e:
         print(e)
         return set_response(None, str(e), 500, False)
+
+@auth_bp.route('/refresh',methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    try:
+        user_id = get_jwt_identity()
+        new_access_token = create_access_token(identity=user_id)
+        return set_response(new_access_token, "Refresh successful", 200, True)
+    except Exception as e:
+        return set_response(None, str(e), 401, False)
