@@ -21,7 +21,6 @@ venv*/
 !.env.example
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -187,3 +186,7 @@ celerybeat.pid
 
 # Documentation
 docs/_build/
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore

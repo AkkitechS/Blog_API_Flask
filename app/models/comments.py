@@ -12,6 +12,15 @@ class Comment(db.Model):
      author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
      content = db.Column(db.Text, nullable=False)
      created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-     updates_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
+     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
      parent_id = db.Column(db.Integer, db.ForeignKey('comments.id'))
-     replies = db.relationship('Comment', backref=db.backref('parent', remote_side=[id], lazy=True))
+
+     # Relationships
+     author = db.relationship('User', back_populates='comments')
+     article = db.relationship('Article', back_populates='comments')
+
+     replies = db.relationship(
+         'Comment',
+         backref=db.backref('parent', remote_side=[id]),
+         cascade='all, delete-orphan'
+     )

@@ -1,4 +1,4 @@
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, SQLAlchemySchema
 from marshmallow import fields, validates, ValidationError, post_load, Schema
 from app.models.users import User
 from app.extensions import db
@@ -64,3 +64,14 @@ class UserResponseSchema(Schema):
     status = fields.String(dump_only=True)
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
+
+class UserUpdatePasswordSchema(Schema):
+    password = fields.String()
+
+    @validates('password')
+    def validate_password(self, value, **kwargs):
+        pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,}$'
+
+        if not bool(re.match(pattern, value)):
+            raise ValidationError(
+                "Password must be 12+ characters long and must include upper and lower case alphabets, numbers, symbols")

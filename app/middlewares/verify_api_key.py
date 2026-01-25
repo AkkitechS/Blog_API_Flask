@@ -7,6 +7,10 @@ def verify_api_key():
     print(f'api_key: {api_key}')
     print(f'current_app: {current_app}')
 
+    # ALLOW PREFLIGHT
+    if request.method == "OPTIONS":
+        return "", 200
+
     if not api_key:
         return set_response(None, 'Unauthorized access', 401, False)
 

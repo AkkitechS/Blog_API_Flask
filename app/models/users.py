@@ -1,5 +1,3 @@
-from email.policy import default
-
 from app.extensions import db
 from datetime import datetime
 
@@ -16,8 +14,8 @@ class User(db.Model):
     status = db.Column(db.Enum('active', 'inactive', 'deleted', name='user_status'), nullable=False, default='active')
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
-    articles = db.relationship('Article', backref='user', lazy=True)
-    comments = db.relationship('Comment', backref='user', lazy=True)
+    articles = db.relationship('Article', back_populates='author', cascade='all, delete-orphan')
+    comments = db.relationship('Comment', back_populates='author', cascade='all, delete-orphan')
 
     def to_dict(self):
         return {
