@@ -1,5 +1,5 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema, SQLAlchemySchema
-from marshmallow import fields, validates, ValidationError, Schema, pre_load
+from marshmallow import fields, validates, ValidationError, Schema, pre_load, validate
 from app.models.articles import Article
 from app.extensions import db
 from app.schemas.user import UserResponseSchema
@@ -22,6 +22,7 @@ class ArticleSchema(SQLAlchemySchema):
     title = fields.String(required=True)
     content = fields.String(required=True)
     slug = fields.String(required=True)
+    status = fields.String(validate=validate.OneOf(["draft", "published"]))
     author_id = fields.Int(required=True)
     category_id = fields.Int(required=True)
     created_at = fields.DateTime(dump_only=True)
@@ -48,7 +49,8 @@ class ArticleResponseSchema(Schema):
     title = fields.String(required=True)
     content = fields.String(required=True)
     slug = fields.String(required=True)
-    author = fields.Nested('UserResponseSchema', only=('id', 'name', 'email', 'username'))
+    status = fields.String(dump_only=True)
+    author = fields.Nested('UserResponseSchema', only=('id', 'name', 'email', 'username', 'avatar'))
     category = fields.Nested('CategoryResponseSchema', only=('id', 'name', 'slug', 'description'))
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)

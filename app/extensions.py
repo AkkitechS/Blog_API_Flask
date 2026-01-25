@@ -12,13 +12,16 @@ jwt = JWTManager()
 ma = Marshmallow()
 migrate = Migrate()
 
+
 def init_cloudinary():
-    cloudinary.config(cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'), api_key=os.getenv('CLOUDINARY_API_KEY'),api_secret=os.getenv('CLOUDINARY_API_SECRET'), secure=True)
+    cloudinary.config(cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'), api_key=os.getenv('CLOUDINARY_API_KEY'),
+                      api_secret=os.getenv('CLOUDINARY_API_SECRET'), secure=True)
+
 
 def init_extensions(app):
     db.init_app(app)
     jwt.init_app(app)
     migrate.init_app(app, db)
-    CORS(app)
+    CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
     ma.init_app(app)
     init_cloudinary()

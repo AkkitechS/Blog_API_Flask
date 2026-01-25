@@ -11,6 +11,7 @@ class Article(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     slug = db.Column(db.String(200), nullable=False, unique=True)
+    status = db.Column(db.Enum("draft", "published", "deleted", name="article_status"), nullable=False, default='published')
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
